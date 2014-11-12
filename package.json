@@ -1,0 +1,22 @@
+{
+  "name": "app-framework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -u bdd -R spec test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^2.3.11",
+    "convict": "^0.5.1",
+    "winston": "^0.7.3",
+    "winston-screenlogger": "git+https://github.com/myndzi/winston-screenlogger"
+  },
+  "devDependencies": {
+    "mocha": "^2.0.1",
+    "should": "^4.3.0",
+    "should-eventually": "^0.1.2"
+  }
+}
