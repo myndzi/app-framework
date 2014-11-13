@@ -12,12 +12,18 @@ Promise.promisifyAll(fs, { suffix: '$' });
 
 describe('logging', function () {
     var mockApp = new EventEmitter();
+    require('../lib/null-logger')(mockApp);
     function configure(obj) {
         mockApp.config = {
-            get: function (key) {
+            get: function getCfg(key) {
                 switch (key) {
                     case 'app': return { name: 'foo' };
                     case 'log': return obj;
+                    default:
+                        return {
+                            app: getCfg('app'),
+                            log: getCfg('log')
+                        };
                 }
             }
         };
@@ -28,7 +34,7 @@ describe('logging', function () {
         configure({
             screen: { level: 'trace' }
         });
-        mod(mockApp).then(function (app) {
+        return mod(mockApp).then(function (app) {
             app.should.have.property('log');
             ['trace', 'silly', 'info', 'warn', 'error']
             .forEach(function (type) { app.log[type].should.be.a.Function; });
