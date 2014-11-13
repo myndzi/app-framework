@@ -6,25 +6,15 @@ describe('configure', function () {
     var mockApp = {
         root: __dirname
     };
-    var mockSchema = {
-        app: {
-            name: {
-                default: 'test'
-            }
-        },
-        env: {
-            default: 'foo'
-        }
-    };
     
     var mod = require('../lib/configure');
     
     before(function () {
-        mod(mockApp, mockSchema);
+        mod(mockApp);
     });
     
     it('should return a promise', function () {
-        return mod(mockApp, mockSchema);
+        return mod(mockApp);
     });
     
     it('should attach a \'config\' object that is an instance of node-convict', function () {

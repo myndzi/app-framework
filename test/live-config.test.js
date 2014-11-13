@@ -7,21 +7,6 @@ describe('live-config', function () {
     var mockApp = new EventEmitter();
     mockApp.root = __dirname;
     
-    var mockSchema = {
-        app: {
-            name: {
-                default: 'test'
-            }
-        },
-        env: {
-            default: 'foo'
-        },
-        test2: {
-            one: { default: 0 },
-            two: { default: 0 }
-        }
-    };
-    
     before(function () {
         require('../lib/live-config')(mockApp);
     });
@@ -39,7 +24,7 @@ describe('live-config', function () {
     
     it('should emit \'configure\' after applying stored configs, after app has loaded', function (done) {
         mockApp.once('configure', done.bind(null, null));
-        require('../lib/configure')(mockApp, mockSchema);
+        require('../lib/configure')(mockApp);
         mockApp.emit('loaded');
     });
     
@@ -52,5 +37,10 @@ describe('live-config', function () {
         (function () {
             mockApp.configure({ test2: { two: 'two' } });
         }).should.throw(/should be of type Number/);
+    });
+    
+    it('should reconfigure the app', function () {
+        mockApp.configure({ test2: { two: 3 } });
+        mockApp.config.get('test2.two').should.equal(3);
     });
 });
