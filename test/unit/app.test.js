@@ -1,5 +1,7 @@
 'use strict';
 
+require('should-eventually');
+
 describe('app', function () {
     var app;
     
