@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -u bdd -R spec test"
+    "test": "mocha -u bdd -R spec test/unit"
   },
   "author": "",
   "license": "ISC",

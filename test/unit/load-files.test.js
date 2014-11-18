@@ -4,10 +4,10 @@ var Promise = require('bluebird'),
     PATH = require('path');
 
 var mockApp = { path: function (str) { return PATH.join(__dirname, str); } },
-    load = require('../lib/load-files');
+    load = require('../../lib/load-files');
 
 before(function () {
-    require('../lib/null-logger')(mockApp);
+    require('../../lib/null-logger')(mockApp);
 })
 describe('load-files', function () {
     it('should load all the .js files in the specified folder, relative to app.path', function () {

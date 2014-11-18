@@ -8,7 +8,7 @@ describe('null-logger', function () {
     var mockApp = { };
     
     before(function () {
-        require('../lib/null-logger')(mockApp);
+        require('../../lib/null-logger')(mockApp);
     });
     
     it('should attach a \'log\' object with log functions', function () {

@@ -30,7 +30,7 @@ describe('listener', function () {
     var server;
     
     before(function () {
-        require('../lib/listener')(mockApp);
+        require('../../lib/listener')(mockApp);
     });
     
     it('should add a .listen method to \'app\'', function () {
@@ -71,7 +71,7 @@ describe('listener', function () {
         mockApp.shutdown = function () {
             mockApp.emit('shutdown');
             server.listeners().should.be.an.Array.of.length(0);
-            done();
+            server.close(done);
         };
         server.emit('error');
     });

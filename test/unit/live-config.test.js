@@ -8,7 +8,7 @@ describe('live-config', function () {
     mockApp.root = __dirname;
     
     before(function () {
-        require('../lib/live-config')(mockApp);
+        require('../../lib/live-config')(mockApp);
     });
     
     it('should add a \'configure\' method to app', function () {
@@ -24,7 +24,7 @@ describe('live-config', function () {
     
     it('should emit \'configure\' after applying stored configs, after app has loaded', function (done) {
         mockApp.once('configure', done.bind(null, null));
-        require('../lib/configure')(mockApp);
+        require('../../lib/configure')(mockApp);
         mockApp.emit('loaded');
     });
     

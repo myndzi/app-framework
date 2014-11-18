@@ -12,7 +12,7 @@ Promise.promisifyAll(fs, { suffix: '$' });
 
 describe('logging', function () {
     var mockApp = new EventEmitter();
-    require('../lib/null-logger')(mockApp);
+    require('../../lib/null-logger')(mockApp);
     function configure(obj) {
         mockApp.config = {
             get: function getCfg(key) {
@@ -28,7 +28,7 @@ describe('logging', function () {
             }
         };
     }
-    var mod = require('../lib/logging');
+    var mod = require('../../lib/logging');
     
     it('should attach a \'log\' property to the app with appropriate methods', function () {
         configure({

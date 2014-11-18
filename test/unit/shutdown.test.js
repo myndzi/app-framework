@@ -10,9 +10,9 @@ var Promise = require('bluebird');
 describe('shutdown', function () {
     var mockApp, called;
     
-    var mod = require('../lib/shutdown');
+    var mod = require('../../lib/shutdown');
     
-    var EXIT_CODES = require('../lib/exit-codes');
+    var EXIT_CODES = require('../../lib/exit-codes');
     
     beforeEach(function () {
         mockApp = new EventEmitter();

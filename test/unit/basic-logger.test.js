@@ -28,7 +28,7 @@ describe('basic-logger', function () {
             return _consoleError.apply(console, arguments);
         };
         
-        require('../lib/basic-logger')(mockApp);
+        require('../../lib/basic-logger')(mockApp);
     });
 
     it('should attach a \'log\' object with log functions', function () {

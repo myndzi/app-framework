@@ -7,7 +7,7 @@ describe('configure', function () {
         root: __dirname
     };
     
-    var mod = require('../lib/configure');
+    var mod = require('../../lib/configure');
     
     before(function () {
         mod(mockApp);
