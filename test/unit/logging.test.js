@@ -32,7 +32,8 @@ describe('logging', function () {
     
     it('should attach a \'log\' property to the app with appropriate methods', function () {
         configure({
-            screen: { level: 'trace' }
+            types: ['screen'],
+            level: 'trace'
         });
         return mod(mockApp).then(function (app) {
             app.should.have.property('log');
@@ -53,9 +54,10 @@ describe('logging', function () {
         
         it('should write each log type to file', function () {
             configure({
+                types: ['file'],
+                level: 'trace',
                 file: {
-                    filename: tempLog,
-                    level: 'trace'
+                    filename: tempLog
                 }
             });
             return mod(mockApp).then(function (app) {
@@ -87,9 +89,10 @@ describe('logging', function () {
         
         it('should limit writes to errors only when configured to do so', function () {
             configure({
+                types: ['file'],
+                level: 'error',
                 file: {
-                    filename: tempLog,
-                    level: 'error'
+                    filename: tempLog
                 }
             });
             return mod(mockApp).then(function (app) {
@@ -130,7 +133,9 @@ describe('logging', function () {
         
         it('should write each log type to the screen', function () {
             configure({
-                screen: { level: 'trace' }
+                types: ['screen'],
+                level: 'trace',
+                screen: { }
             });
             
             return mod(mockApp).then(function (app) {
@@ -157,9 +162,9 @@ describe('logging', function () {
         });
         it('should limit writes to errors only when configured to do so', function () {
             configure({
-                screen: {
-                    level: 'error'
-                }
+                types: ['screen'],
+                level: 'error',
+                screen: { }
             });
             return mod(mockApp).then(function (app) {
                 app.log.trace('trace');
@@ -205,6 +210,7 @@ describe('logging', function () {
         
         it('should initialize Syslog with the correct facility', function () {
             configure({
+                types: ['syslog'],
                 syslog: { facility: 'LOCAL3' }
             });
             initCB(function (name, flags, facility) {
@@ -215,9 +221,10 @@ describe('logging', function () {
         });
         it('should log to syslog', function () {
             configure({
+                types: ['syslog'],
+                level: 'trace',
                 syslog: {
-                    facility: 'LOCAL3',
-                    level: 'trace'
+                    facility: 'LOCAL3'
                 }
             });
             
@@ -257,9 +264,10 @@ describe('logging', function () {
         });
         it('should limit writes to errors only when configured to do so', function () {
             configure({
+                types: ['syslog'],
+                level: 'error',
                 syslog: {
-                    facility: 'LOCAL3',
-                    level: 'error'
+                    facility: 'LOCAL3'
                 }
             });
             return mod(mockApp).then(function (app) {
