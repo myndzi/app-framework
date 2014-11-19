@@ -14,6 +14,20 @@ describe('basic-logger', function () {
         
     var lastargs = [ ];
         
+    function wrap(fn) {
+        var err = null;
+        
+        calls = errors = 0;
+        quiet = true;
+        
+        try { fn(); }
+        catch (e) { err = e; }
+        
+        quiet = false;
+        
+        if (err !== null) { throw err; }
+    }
+    
     before(function () {
         console.log = function () {
             calls++;
@@ -37,31 +51,32 @@ describe('basic-logger', function () {
         .forEach(function (type) { mockApp.log[type].should.be.a.Function });
     });
     it('should call console.log for trace, silly, and info and console.error for warn, error', function () {
-        calls = errors = 0;
-        quiet = true;
-        ['trace', 'silly', 'info', 'warn', 'error']
-        .forEach(function (type) { mockApp.log[type]('foo'); });
-        quiet = false;
+        wrap(function () {
+            ['trace', 'silly', 'info', 'warn', 'error']
+            .forEach(function (type) { mockApp.log[type]('foo'); });
+        });
         calls.should.equal(3);
         errors.should.equal(2);
     });
-    it('should pass supplied arguments', function () {
-        quiet = true;
-        ['trace', 'silly', 'info', 'warn', 'error']
-        .forEach(function (type) {
-            mockApp.log[type]('foo');
-            lastargs[1].should.equal('foo');
+    it('should format supplied arguments', function () {
+        wrap(function () {
+            ['trace', 'silly', 'info', 'warn', 'error']
+            .forEach(function (type) {
+                mockApp.log[type]('<%s>', 'foo');
+                lastargs[0].should.match(/<foo>$/);
+            });
         });
-        quiet = false;
     });
     it('should prefix arguments with the log type', function () {
-        quiet = true;
-        ['trace', 'silly', 'info', 'warn', 'error']
-        .forEach(function (type) {
-            mockApp.log[type]('foo');
-            lastargs[0].should.match(new RegExp('^'+type, 'i'));
+        wrap(function () {
+            ['trace', 'silly', 'info', 'warn', 'error']
+            .forEach(function (type) {
+                mockApp.log[type]('foo');
+                lastargs.length.should.be.above(0);
+                lastargs[0].should.match(new RegExp('^'+type, 'i'));
+            });
+            
         });
-        quiet = false;
     });
     
     after(function () {
