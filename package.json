@@ -1,12 +1,16 @@
 {
-  "name": "app-framework",
+  "name": "@eros/app-framework",
   "version": "1.0.0",
   "description": "",
   "main": "./lib/index.js",
   "scripts": {
     "test": "test-runner"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/bbhmedia/app-framework"
+  },
+  "author": "Kris Reeves",
   "license": "ISC",
   "dependencies": {
     "bluebird": "^2.3.11",
