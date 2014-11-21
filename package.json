@@ -13,9 +13,13 @@
   "author": "Kris Reeves",
   "license": "ISC",
   "dependencies": {
+    "@eros/bunyan-screenlogger": "^0.1.0",
     "bluebird": "^2.3.11",
+    "bunyan": "^1.2.3",
     "convict": "^0.5.1",
-    "winston": "^0.7.3",
+    "dtrace-provider": "^0.3.1",
+    "logrotate-stream": "^0.2.3",
+    "restify": "^2.8.3",
     "winston-screenlogger": "git+https://github.com/myndzi/winston-screenlogger"
   },
   "devDependencies": {

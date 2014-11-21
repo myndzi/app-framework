@@ -3,12 +3,41 @@
 require('should-eventually');
 
 var EventEmitter = require('events').EventEmitter;
+var PassThrough = require('stream').PassThrough;
 
 var fs = require('fs'),
     PATH = require('path'),
     Promise = require('bluebird');
 
 Promise.promisifyAll(fs, { suffix: '$' });
+
+var TRACE = 10;
+var DEBUG = 20;
+var INFO = 30;
+var WARN = 40;
+var ERROR = 50;
+var FATAL = 60;
+
+var levelFromName = {
+    'trace': TRACE,
+    'debug': DEBUG,
+    'info': INFO,
+    'warn': WARN,
+    'error': ERROR,
+    'fatal': FATAL
+};
+var nameFromLevel = {};
+var upperNameFromLevel = {};
+var upperPaddedNameFromLevel = {};
+var prefixFromLevel = {};
+Object.keys(levelFromName).forEach(function (name) {
+    var lvl = levelFromName[name];
+    nameFromLevel[lvl] = name;
+    upperNameFromLevel[lvl] = name.toUpperCase();
+    upperPaddedNameFromLevel[lvl] = (
+        name.length === 4 ? ' ' : '') + name.toUpperCase();
+    prefixFromLevel[lvl] = name.slice(0, 1);
+});
 
 describe('logging', function () {
     var mockApp = new EventEmitter();
@@ -37,8 +66,10 @@ describe('logging', function () {
         });
         return mod(mockApp).then(function (app) {
             app.should.have.property('log');
-            ['trace', 'silly', 'info', 'warn', 'error']
-            .forEach(function (type) { app.log[type].should.be.a.Function; });
+            ['trace', 'debug', 'info', 'warn', 'error', 'fatal']
+            .forEach(function (type) {
+                app.log[type].should.be.a.Function;
+            });
         });
     });
     
@@ -62,10 +93,11 @@ describe('logging', function () {
             });
             return mod(mockApp).then(function (app) {
                 app.log.trace('trace');
-                app.log.silly('silly');
+                app.log.debug('debug');
                 app.log.info('info');
                 app.log.warn('warn');
                 app.log.error('error');
+                app.log.fatal('fatal');
 
                 return app.log.close();
             }).then(function () {
@@ -75,11 +107,11 @@ describe('logging', function () {
                     .split('\n')
                     .filter(function (a) { return a; });
                     
-                var types = ['trace', 'silly', 'info', 'warn', 'error'];
+                var types = ['trace', 'debug', 'info', 'warn', 'error', 'fatal'];
                 
                 arr.forEach(function (line) {
                     line = JSON.parse(line);
-                    line.level.should.equal(line.message);
+                    nameFromLevel[line.level].should.equal(line.msg);
                     types.splice(types.indexOf(line.level), 1);
                 });
                 
@@ -97,10 +129,11 @@ describe('logging', function () {
             });
             return mod(mockApp).then(function (app) {
                 app.log.trace('trace');
-                app.log.silly('silly');
+                app.log.debug('debug');
                 app.log.info('info');
                 app.log.warn('warn');
                 app.log.error('error');
+                app.log.fatal('fatal');
 
                 return app.log.close();
             }).then(function () {
@@ -110,21 +143,19 @@ describe('logging', function () {
                     .split('\n')
                     .filter(function (a) { return a; });
                 
-                arr.length.should.equal(1);
+                arr.length.should.equal(2);
             });
         });
     });
     
     describe('screen logging', function () {
-        var Logger = require('winston-screenlogger'),
+        var Logger = require('@eros/bunyan-screenlogger'),
             _log = Logger.prototype.log;
         var msgs = [ ];
         before(function () {
-            Logger.prototype.log = function (level, message) {
-                msgs.push({
-                    level: level,
-                    message: message
-                });
+            Logger.prototype._transform = function (rec, encoding, cb) {
+                msgs.push(rec);
+                cb();
             };
         });
         after(function () {
@@ -140,20 +171,21 @@ describe('logging', function () {
             
             return mod(mockApp).then(function (app) {
                 app.log.trace('trace');
-                app.log.silly('silly');
+                app.log.debug('debug');
                 app.log.info('info');
                 app.log.warn('warn');
                 app.log.error('error');
+                app.log.fatal('fatal');
 
                 return app.log.close();
             }).then(function () {
                 var arr = msgs;
                 msgs = [ ];
                 
-                var types = ['trace', 'silly', 'info', 'warn', 'error'];
+                var types = ['trace', 'debug', 'info', 'warn', 'error', 'fatal'];
                 
                 arr.forEach(function (line) {
-                    line.level.should.equal(line.message);
+                    nameFromLevel[line.level].should.equal(line.msg);
                     types.splice(types.indexOf(line.level), 1);
                 });
                 
@@ -168,53 +200,56 @@ describe('logging', function () {
             });
             return mod(mockApp).then(function (app) {
                 app.log.trace('trace');
-                app.log.silly('silly');
+                app.log.debug('debug');
                 app.log.info('info');
                 app.log.warn('warn');
                 app.log.error('error');
+                app.log.fatal('fatal');
 
                 return app.log.close();
             }).then(function () {
                 var arr = msgs;
                 msgs = [ ];
                 
-                arr.length.should.equal(1);
+                arr.length.should.equal(2);
             });
         });
     });
     
     describe('syslog logging', function () {
-        var Syslog = require('winston-syslog-native/node_modules/node-syslog'),
-            SN = require('winston-syslog-native').SyslogNative;
+        var bsyslog = require('bunyan-syslog');
+        var pt, msgs = [ ];
         
-        var _init = Syslog.init,
-            _log = Syslog.log;
+        var _createBunyanStream = bsyslog.createBunyanStream;
         
-        var _initCB = function () { },
-            _logCB = function () { };
+        var _initCB = function () { };
             
-        var initCB = function (fn) { _initCB = fn; },
-            logCB = function (fn) { _logCB = fn; };
+        var initCB = function (fn) { _initCB = fn; };
 
-        var msgs = [ ];
-        
         before(function () {
-            Syslog.init = function () { return _initCB.apply(Syslog, arguments); }
-            Syslog.log = function () { return _logCB.apply(Syslog, arguments); }
+            pt = new PassThrough({
+                objectMode: true
+            });
+            pt.on('data', function (obj) {
+                msgs.push(obj);
+            });
+            bsyslog.createBunyanStream = function () {
+                _initCB.apply(null, arguments);
+                return pt;
+            };
         });
-        
-        after(function () {
-            Syslog.init = _init;
-            Syslog.log = _log;
+        after(function () {        
+            bsyslog.createBunyanStream = _createBunyanStream;
+            pt.end();
         });
         
         it('should initialize Syslog with the correct facility', function () {
             configure({
                 types: ['syslog'],
-                syslog: { facility: 'LOCAL3' }
+                syslog: { facility: 'local3' }
             });
-            initCB(function (name, flags, facility) {
-                facility.should.equal(Syslog.LOG_LOCAL3);
+            initCB(function (opts) {
+                opts.facility.should.equal(bsyslog.local3);
             });
 
             return mod(mockApp);
@@ -224,38 +259,27 @@ describe('logging', function () {
                 types: ['syslog'],
                 level: 'trace',
                 syslog: {
-                    facility: 'LOCAL3'
+                    facility: 'local3'
                 }
             });
             
             return mod(mockApp).then(function (app) {
-                var levels = Object.keys(SN.levels).reduce(function (ret, key) {
-                    ret[SN.levels[key]] = key;
-                    return ret;
-                }, { });
-                
-                logCB(function (level, msg) {
-                    msgs.push({
-                        level: levels[level],
-                        message: msg
-                    });
-                });
-
                 app.log.trace('trace');
-                app.log.silly('silly');
+                app.log.debug('debug');
                 app.log.info('info');
                 app.log.warn('warn');
                 app.log.error('error');
+                app.log.fatal('fatal');
 
                 return app.log.close();
             }).then(function () {
                 var arr = msgs;
                 msgs = [ ];
                 
-                var types = ['trace', 'silly', 'info', 'warn', 'error'];
+                var types = ['trace', 'debug', 'info', 'warn', 'error', 'fatal'];
                 
                 arr.forEach(function (line) {
-                    line.level.should.equal(line.message);
+                    nameFromLevel[line.level].should.equal(line.msg);
                     types.splice(types.indexOf(line.level), 1);
                 });
                 
@@ -272,17 +296,18 @@ describe('logging', function () {
             });
             return mod(mockApp).then(function (app) {
                 app.log.trace('trace');
-                app.log.silly('silly');
+                app.log.debug('debug');
                 app.log.info('info');
                 app.log.warn('warn');
                 app.log.error('error');
+                app.log.fatal('fatal');
 
                 return app.log.close();
             }).then(function () {
                 var arr = msgs;
                 msgs = [ ];
                 
-                arr.length.should.equal(1);
+                arr.length.should.equal(2);
             });
         });
     });
