@@ -47,20 +47,20 @@ describe('basic-logger', function () {
 
     it('should attach a \'log\' object with log functions', function () {
         mockApp.should.have.property('log');
-        ['trace', 'silly', 'info', 'warn', 'error']
+        ['trace', 'debug', 'info', 'warn', 'error', 'fatal']
         .forEach(function (type) { mockApp.log[type].should.be.a.Function });
     });
-    it('should call console.log for trace, silly, and info and console.error for warn, error', function () {
+    it('should call console.log for trace, debug, and info and console.error for warn, error, fatal', function () {
         wrap(function () {
-            ['trace', 'silly', 'info', 'warn', 'error']
+            ['trace', 'debug', 'info', 'warn', 'error', 'fatal']
             .forEach(function (type) { mockApp.log[type]('foo'); });
         });
         calls.should.equal(3);
-        errors.should.equal(2);
+        errors.should.equal(3);
     });
     it('should format supplied arguments', function () {
         wrap(function () {
-            ['trace', 'silly', 'info', 'warn', 'error']
+            ['trace', 'debug', 'info', 'warn', 'error', 'fatal']
             .forEach(function (type) {
                 mockApp.log[type]('<%s>', 'foo');
                 lastargs[0].should.match(/<foo>$/);
@@ -69,7 +69,7 @@ describe('basic-logger', function () {
     });
     it('should prefix arguments with the log type', function () {
         wrap(function () {
-            ['trace', 'silly', 'info', 'warn', 'error']
+            ['trace', 'debug', 'info', 'warn', 'error', 'fatal']
             .forEach(function (type) {
                 mockApp.log[type]('foo');
                 lastargs.length.should.be.above(0);

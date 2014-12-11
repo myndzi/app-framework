@@ -6,6 +6,7 @@ var EventEmitter = require('events').EventEmitter;
 var PassThrough = require('stream').PassThrough;
 
 var fs = require('fs'),
+    net = require('net'),
     PATH = require('path'),
     Promise = require('bluebird');
 
@@ -101,6 +102,8 @@ describe('logging', function () {
 
                 return app.log.close();
             }).then(function () {
+                return Promise.delay(100);
+            }).then(function () {
                 return fs.readFile$(tempLog);
             }).then(function (buf) {
                 var arr = buf.toString()
@@ -136,6 +139,8 @@ describe('logging', function () {
                 app.log.fatal('fatal');
 
                 return app.log.close();
+            }).then(function () {
+                return Promise.delay(100);
             }).then(function () {
                 return fs.readFile$(tempLog);
             }).then(function (buf) {
@@ -217,97 +222,84 @@ describe('logging', function () {
     });
     
     describe('syslog logging', function () {
-        var bsyslog = require('bunyan-syslog');
         var pt, msgs = [ ];
         
-        var _createBunyanStream = bsyslog.createBunyanStream;
+        var server, BIND_PORT = 1414;
         
-        var _initCB = function () { };
-            
-        var initCB = function (fn) { _initCB = fn; };
-
-        before(function () {
-            pt = new PassThrough({
-                objectMode: true
-            });
-            pt.on('data', function (obj) {
-                msgs.push(obj);
-            });
-            bsyslog.createBunyanStream = function () {
-                _initCB.apply(null, arguments);
-                return pt;
-            };
+        beforeEach(function (done) {
+            server = net.createServer();
+            server.listen(BIND_PORT, done);
         });
-        after(function () {        
-            bsyslog.createBunyanStream = _createBunyanStream;
-            pt.end();
+        afterEach(function (done) {
+            server.close(done);
         });
         
-        it('should initialize Syslog with the correct facility', function () {
-            configure({
-                types: ['syslog'],
-                syslog: { facility: 'local3' }
-            });
-            initCB(function (opts) {
-                opts.facility.should.equal(bsyslog.local3);
-            });
-
-            return mod(mockApp);
-        });
-        it('should log to syslog', function () {
+        it('should log to syslog', function (done) {
             configure({
                 types: ['syslog'],
                 level: 'trace',
                 syslog: {
-                    facility: 'local3'
+                    facility: 'local3',
+                    connection: {
+                        type: 'tcp',
+                        port: BIND_PORT
+                    }
                 }
             });
             
-            return mod(mockApp).then(function (app) {
+            mod(mockApp).then(function (app) {
                 app.log.trace('trace');
                 app.log.debug('debug');
                 app.log.info('info');
                 app.log.warn('warn');
                 app.log.error('error');
                 app.log.fatal('fatal');
-
-                return app.log.close();
-            }).then(function () {
-                var arr = msgs;
-                msgs = [ ];
                 
-                var types = ['trace', 'debug', 'info', 'warn', 'error', 'fatal'];
-                
-                arr.forEach(function (line) {
-                    nameFromLevel[line.level].should.equal(line.msg);
-                    types.splice(types.indexOf(line.level), 1);
+                server.on('connection', function (socket) {
+                    socket.on('data', function (chunk) {
+                        // checking the message contents more strictly is troublesome
+                        
+                        var msgs = chunk.toString().split(/\r?\n/)
+                            .filter(function (a) { return a; });
+                        msgs.length.should.equal(6);
+                        
+                        app.log.close().nodeify(done);
+                    });
                 });
-                
-                types.length.should.equal(0);
             });
         });
-        it('should limit writes to errors only when configured to do so', function () {
+        it('should limit writes to errors only when configured to do so', function (done) {
             configure({
                 types: ['syslog'],
                 level: 'error',
                 syslog: {
-                    facility: 'LOCAL3'
+                    facility: 'local3',
+                    connection: {
+                        type: 'tcp',
+                        port: BIND_PORT
+                    }
                 }
             });
-            return mod(mockApp).then(function (app) {
+            
+            mod(mockApp).then(function (app) {
                 app.log.trace('trace');
                 app.log.debug('debug');
                 app.log.info('info');
                 app.log.warn('warn');
                 app.log.error('error');
                 app.log.fatal('fatal');
-
-                return app.log.close();
-            }).then(function () {
-                var arr = msgs;
-                msgs = [ ];
                 
-                arr.length.should.equal(2);
+                server.on('connection', function (socket) {
+                    socket.on('data', function (chunk) {
+                        // checking the message contents more strictly is troublesome
+                        
+                        var msgs = chunk.toString().split(/\r?\n/)
+                            .filter(function (a) { return a; });
+                        msgs.length.should.equal(2);
+                        
+                        app.log.close().nodeify(done);
+                    });
+                });
             });
         });
     });

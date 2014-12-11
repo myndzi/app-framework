@@ -13,7 +13,7 @@ describe('null-logger', function () {
     
     it('should attach a \'log\' object with log functions', function () {
         mockApp.should.have.property('log');
-        ['trace', 'silly', 'info', 'warn', 'error']
+        ['trace', 'debug', 'info', 'warn', 'error', 'fatal']
         .forEach(function (type) { mockApp.log[type].should.be.a.Function });
     });
     
@@ -25,7 +25,7 @@ describe('null-logger', function () {
             process.stdout.write = reject;
             process.stderr.write = reject;
             
-            ['trace', 'silly', 'info', 'warn', 'error']
+            ['trace', 'debug', 'info', 'warn', 'error', 'fatal']
             .forEach(function (type) { mockApp.log[type]('fail'); });
             
             process.stdout.removeListener('data', reject);

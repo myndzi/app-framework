@@ -26,7 +26,7 @@ describe('app', function () {
     it('should be using the null-logger when called with quiet: true', function () {
         var mock = { };
         require('../../lib/null-logger')(mock);
-        mock.log.silly.should.equal(app.log.silly);
+        mock.log.debug.should.equal(app.log.debug);
     });
     
     it('should emit a \'loaded\' event when complete', function (done) {
