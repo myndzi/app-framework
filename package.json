@@ -14,17 +14,20 @@
   "license": "ISC",
   "dependencies": {
     "@eros/bunyan-screenlogger": "^0.1.0",
+    "@eros/test-runner": "^1.0.1",
     "bluebird": "^2.3.11",
     "bunyan": "^1.2.3",
+    "clone": "^0.2.0",
     "convict": "^0.5.1",
     "dtrace-provider": "^0.3.1",
+    "express": "^4.10.5",
     "logrotate-stream": "^0.2.3",
     "restify": "^2.8.3",
-    "winston-screenlogger": "git+https://github.com/myndzi/winston-screenlogger"
+    "syslog2": "^1.0.1"
   },
   "devDependencies": {
     "mocha": "^2.0.1",
-    "should": "^4.3.0",
+    "should": "4.0.x",
     "should-eventually": "^0.1.2"
   }
 }
