@@ -13,7 +13,7 @@
   "author": "Kris Reeves",
   "license": "ISC",
   "dependencies": {
-    "@eros/bunyan-screenlogger": "git+ssh://git@github.com/bbhmedia/bunyan-screenlogger",
+    "@eros/bunyan-screenlogger": "git+ssh://git@github.com/myndzi/bunyan-screenlogger",
     "@eros/test-runner": "git+ssh://git@github.com/bbhmedia/test-runner",
     "bluebird": "^2.3.11",
     "bunyan": "^1.2.3",
