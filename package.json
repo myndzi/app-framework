@@ -23,7 +23,7 @@
     "express": "^4.10.5",
     "logrotate-stream": "^0.2.3",
     "restify": "^2.8.3",
-    "syslog2": "^1.0.1"
+    "syslog2": "^1.0.2"
   },
   "devDependencies": {
     "mocha": "^2.0.1",
