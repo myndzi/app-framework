@@ -4,7 +4,8 @@
   "description": "",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "test-runner"
+    "test": "test-runner",
+    "bamp": "bamp"
   },
   "repository": {
     "type": "git",
@@ -14,18 +15,19 @@
   "license": "ISC",
   "dependencies": {
     "@eros/bunyan-screenlogger": "^0.1.2",
-    "@eros/test-runner": "^1.0.4",
     "bluebird": "^2.3.11",
     "bunyan": "^1.2.3",
     "clone": "^0.2.0",
     "convict": "^0.5.1",
     "dtrace-provider": "^0.3.1",
-    "express": "^4.10.5",
+    "express": "^4.11.1",
     "logrotate-stream": "^0.2.3",
-    "restify": "^2.8.3",
-    "syslog2": "^1.0.2"
+    "syslog2": "^1.0.2",
+    "traceview": "^1.6.1"
   },
   "devDependencies": {
+    "@eros/test-runner": "^1.0.4",
+    "bamp": "^1.0.3",
     "mocha": "^2.0.1",
     "should": "4.0.x",
     "should-eventually": "^0.1.2"
