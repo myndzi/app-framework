@@ -1,6 +1,11 @@
 'use strict';
 
 module.exports = {
+    traceview: {
+        enabled: {
+            default: false
+        }
+    },
     app: {
         name: {
             default: 'test'
