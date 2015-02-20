@@ -22,7 +22,7 @@
     "dtrace-provider": "^0.3.1",
     "express": "^4.11.1",
     "logrotate-stream": "^0.2.3",
-    "syslog2": "^1.0.2",
+    "syslog2": "^1.0.6",
     "traceview": "^1.6.2"
   },
   "devDependencies": {

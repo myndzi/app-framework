@@ -247,25 +247,27 @@ describe('logging', function () {
                 }
             });
             
-            mod(mockApp).then(function (app) {
-                app.log.trace('trace');
-                app.log.debug('debug');
-                app.log.info('info');
-                app.log.warn('warn');
-                app.log.error('error');
-                app.log.fatal('fatal');
-                
-                server.on('connection', function (socket) {
-                    socket.on('data', function (chunk) {
-                        // checking the message contents more strictly is troublesome
-                        
-                        var msgs = chunk.toString().split(/\r?\n/)
-                            .filter(function (a) { return a; });
-                        msgs.length.should.equal(6);
-                        
-                        app.log.close().nodeify(done);
-                    });
+            var app;
+            
+            server.on('connection', function (socket) {
+                socket.on('data', function (chunk) {
+                    // checking the message contents more strictly is troublesome
+                    
+                    var msgs = chunk.toString().split(/\r?\n/)
+                        .filter(function (a) { return a; });
+                    msgs.length.should.equal(6);
+                    
+                    app.log.close().nodeify(done);
                 });
+            });
+            mod(mockApp).then(function (_app) {
+                app = _app;
+                _app.log.trace('trace');
+                _app.log.debug('debug');
+                _app.log.info('info');
+                _app.log.warn('warn');
+                _app.log.error('error');
+                _app.log.fatal('fatal');
             });
         });
         it('should limit writes to errors only when configured to do so', function (done) {
@@ -281,25 +283,27 @@ describe('logging', function () {
                 }
             });
             
-            mod(mockApp).then(function (app) {
-                app.log.trace('trace');
-                app.log.debug('debug');
-                app.log.info('info');
-                app.log.warn('warn');
-                app.log.error('error');
-                app.log.fatal('fatal');
-                
-                server.on('connection', function (socket) {
-                    socket.on('data', function (chunk) {
-                        // checking the message contents more strictly is troublesome
-                        
-                        var msgs = chunk.toString().split(/\r?\n/)
-                            .filter(function (a) { return a; });
-                        msgs.length.should.equal(2);
-                        
-                        app.log.close().nodeify(done);
-                    });
+            var app;
+            server.on('connection', function (socket) {
+                socket.on('data', function (chunk) {
+                    // checking the message contents more strictly is troublesome
+                    
+                    var msgs = chunk.toString().split(/\r?\n/)
+                        .filter(function (a) { return a; });
+                    msgs.length.should.equal(2);
+                    
+                    app.log.close().nodeify(done);
                 });
+            });
+            
+            mod(mockApp).then(function (_app) {
+                app = _app;
+                _app.log.trace('trace');
+                _app.log.debug('debug');
+                _app.log.info('info');
+                _app.log.warn('warn');
+                _app.log.error('error');
+                _app.log.fatal('fatal');
             });
         });
     });
