@@ -5,7 +5,7 @@ require('should-eventually');
 describe('basic-logger', function () {
     var _consoleLog = console.log,
         _consoleError = console.error,
-        mockApp = { config: { get: function () { return 'trace'; } } };
+        mockApp = { config: { get: function () { return { log: { level: 'trace' } }; } } };
         
     var calls = 0,
         errors = 0;
