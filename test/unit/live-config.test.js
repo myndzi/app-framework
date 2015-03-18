@@ -3,9 +3,13 @@
 require('should-eventually');
 var EventEmitter = require('events').EventEmitter;
 
+var convict = require('convict');
+
 describe('live-config', function () {
     var mockApp = new EventEmitter();
-    mockApp.root = __dirname;
+    mockApp.config = convict({ }).load({
+        app: { env: 'testing', root: __dirname }
+    });
     
     before(function () {
         require('../../lib/live-config')(mockApp);

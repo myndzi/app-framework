@@ -1,6 +1,6 @@
 {
   "name": "@eros/app-framework",
-  "version": "1.0.18",
+  "version": "1.1.0",
   "description": "",
   "main": "./lib/index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "bluebird": "^2.3.11",
     "bunyan": "^1.2.3",
     "clone": "^0.2.0",
-    "convict": "^0.5.1",
+    "convict": "^0.6.1",
     "dtrace-provider": "^0.3.1",
     "express": "^4.11.1",
     "logrotate-stream": "^0.2.3",

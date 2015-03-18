@@ -40,23 +40,16 @@ Object.keys(levelFromName).forEach(function (name) {
     prefixFromLevel[lvl] = name.slice(0, 1);
 });
 
+var convict = require('convict');
+
 describe('logging', function () {
     var mockApp = new EventEmitter();
     require('../../lib/null-logger')(mockApp);
     function configure(obj) {
-        mockApp.config = {
-            get: function getCfg(key) {
-                switch (key) {
-                    case 'app': return { name: 'foo' };
-                    case 'log': return obj;
-                    default:
-                        return {
-                            app: getCfg('app'),
-                            log: getCfg('log')
-                        };
-                }
-            }
-        };
+        mockApp.config = convict({ }).load({
+            app: { name: 'foo' },
+            log: obj
+        });
     }
     var mod = require('../../lib/logging');
     

@@ -7,8 +7,7 @@ describe('app', function () {
     
     before(function () {
         return require('../../lib/index')({
-            root: __dirname,
-            quiet: true
+            app: { root: __dirname }
         }).then(function (_app) {
             app = _app;
             return app.listen();
