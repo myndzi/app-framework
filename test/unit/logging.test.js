@@ -147,7 +147,7 @@ describe('logging', function () {
     });
     
     describe('screen logging', function () {
-        var Logger = require('@eros/bunyan-screenlogger'),
+        var Logger = require('bunyan-screenlogger'),
             _log = Logger.prototype.log;
         var msgs = [ ];
         before(function () {

@@ -1,6 +1,6 @@
 {
   "name": "@eros/app-framework",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "main": "./lib/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "author": "Kris Reeves",
   "license": "ISC",
   "dependencies": {
-    "@eros/bunyan-screenlogger": "^0.1.2",
+    "bunyan-screenlogger": "^1.0.0",
     "bluebird": "^2.3.11",
     "bunyan": "^1.2.3",
     "clone": "^0.2.0",
