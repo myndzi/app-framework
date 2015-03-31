@@ -14,13 +14,14 @@
   "author": "Kris Reeves",
   "license": "ISC",
   "dependencies": {
-    "bunyan-screenlogger": "^1.0.0",
     "bluebird": "^2.3.11",
     "bunyan": "^1.2.3",
+    "bunyan-screenlogger": "^1.0.0",
     "clone": "^0.2.0",
     "convict": "^0.6.1",
     "dtrace-provider": "^0.3.1",
     "express": "^4.11.1",
+    "extend": "^2.0.0",
     "logrotate-stream": "^0.2.3",
     "syslog2": "^1.0.6",
     "traceview": "^1.6.2"
