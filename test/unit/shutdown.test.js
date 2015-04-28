@@ -104,9 +104,9 @@ describe('shutdown', function () {
         return mockApp.shutdown().then(wasCalled(2));
     });
     
-    it('should include an error if \'await\' is called with an invalid argument', function () {
+    it('should include an error if \'await\' is called with an error', function () {
         mockApp.once('shutdown', function (await) {
-            await(false);
+            await(new Error('foo'));
             didCall();
         });
         mockApp.once('after shutdown', function (result) {
@@ -143,5 +143,13 @@ describe('shutdown', function () {
             didCall();
         });
         return mockApp.shutdown(-123, 'foo', 1234).then(wasCalled);
+    });
+    
+    it('should call all handlers even if one throws synchronously', function () {
+        mockApp.once('shutdown', function () {
+            throw 'foo';
+        });
+        mockApp.once('shutdown', didCall);
+        return mockApp.shutdown().then(wasCalled(1));
     });
 });
