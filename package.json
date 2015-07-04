@@ -14,7 +14,7 @@
   "author": "Kris Reeves",
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^2.3.11",
+    "bluebird": "2.9.30",
     "bunyan": "^1.2.3",
     "bunyan-screenlogger": "^1.0.0",
     "clone": "^0.2.0",
@@ -24,7 +24,7 @@
     "extend": "^2.0.0",
     "logrotate-stream": "^0.2.3",
     "syslog2": "^1.0.6",
-    "traceview": "1.8.3"
+    "traceview": "^1.8.4"
   },
   "devDependencies": {
     "@eros/test-runner": "^1.0.4",
