@@ -112,7 +112,6 @@ A basic stdout/stderr logger is used for bootstrapping and shutdown; these messa
 - Basic logger
 - Full configuration
 - Full logging
-- Traceview
 - Configured modules
 
 Each of these steps is explained below:
@@ -139,11 +138,6 @@ This step finds and loads the full schema and any config files; it logs some deb
 
 ## Full logging
 This step takes the processed configuration and instantiates the configured log transports, extending `app` with a full Bunyan instance at `app.log`
-
-## Traceview
-Care has been taken up until now not to load any external modules such as `express` or `pg`; Traceview must be included *before* any such modules get required, anywhere, in any file. So don't do it in your config files. You can, but it's a bad idea!
-
-Traceview requires the ENABLE_TRACEVIEW environment variable to be set to true, *and* the `traceview.enabled` config key to be true. Ideally, the schema defines these to be the same. Traceview also requires `traceview.traceMode` to be set to `always` if your application is not running behind a traceview-enabled instance of nginx, apache, or some such.
 
 ## Configured modules
 The `modules` key passed on instantiation (`App({ modules: [ ... ] })`) defines directories within `<appRoot>/app` to load code from. Directories listed here will be searched for `.js` files to load, and those files will be loaded accordingly. This method should soon be deprecated in favor of calling `app.loadFiles` explicitly. Detailed behavior will be described in that section.
