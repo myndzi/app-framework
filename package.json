@@ -14,7 +14,7 @@
   "author": "Kris Reeves",
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^2.9.34",
+    "bluebird": "^2.9.34||^3.0.0",
     "bunyan": "^1.2.3",
     "bunyan-screenlogger": "^1.0.0",
     "convict": "^0.6.1",
