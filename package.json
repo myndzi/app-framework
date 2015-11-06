@@ -1,5 +1,5 @@
 {
-  "name": "@eros/app-framework",
+  "name": "@myndzi/app-framework",
   "version": "1.2.1",
   "description": "Config and logging framework for Node.js applications",
   "main": "./lib/index.js",
@@ -24,7 +24,7 @@
     "syslog2": "^1.0.6"
   },
   "devDependencies": {
-    "@eros/test-runner": "^1.0.4",
+    "@myndzi/test-runner": "^1.0.4",
     "bamp": "^1.0.3",
     "mocha": "^2.0.1",
     "should": "^6.0.1",
