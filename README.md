@@ -10,7 +10,7 @@ This isn't so much a framework per se as it is a light wrapper around `express`.
 
 This includes a little boilerplate that allows the product to function as a module or a standalone executable.
 
-	var App = require('@eros/app-framework');
+	var App = require('@myndzi/app-framework');
 	var extend = require('extend');
 	module.exports = function (_config) {
 		var config = extend({
