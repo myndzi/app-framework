@@ -32,6 +32,13 @@ describe('live-config', function () {
         mockApp.emit('loaded');
     });
     
+    it('should correctly apply buffered configure calls', function () {
+        // there was a bug where config.load() was being called with an array rather than applying
+        // the array to the function call; this would create a key '0', which is what we check
+        // for here in the regression test
+        mockApp.config.has('0').should.equal(false);
+    });
+    
     it('should emit \'configure\' immediately when app is already loaded', function (done) {
         mockApp.once('configure', done.bind(null, null));
         mockApp.configure({});
