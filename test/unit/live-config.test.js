@@ -7,7 +7,14 @@ var convict = require('convict');
 
 describe('live-config', function () {
     var mockApp = new EventEmitter();
-    mockApp.config = convict({ }).load({
+    mockApp.config = convict({
+        test2: {
+            two: {
+                format: 'integer',
+                default: 0
+            }
+        }
+    }).load({
         app: { env: 'testing', root: __dirname }
     });
     
@@ -47,7 +54,7 @@ describe('live-config', function () {
     it('should throw if an invalid configuration is applied', function () {
         (function () {
             mockApp.configure({ test2: { two: 'two' } });
-        }).should.throw(/should be of type Number/);
+        }).should.throw(/must be an integer/);
     });
     
     it('should reconfigure the app', function () {

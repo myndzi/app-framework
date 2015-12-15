@@ -17,7 +17,7 @@
     "bluebird": "^2.9.34||^3.0.0",
     "bunyan": "^1.2.3",
     "bunyan-screenlogger": "^1.0.0",
-    "convict": "^1.0.2",
+    "convict": "https://github.com/myndzi/node-convict",
     "express": "^4.11.1",
     "extend": "^2.0.0",
     "logrotate-stream": "^0.2.3",
