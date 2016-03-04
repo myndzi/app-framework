@@ -17,6 +17,7 @@ describe('shutdown', function () {
     beforeEach(function () {
         mockApp = new EventEmitter();
         mockApp.root = __dirname;
+        mockApp.config = { get: function () { return null; } };
 
         called = 0;
         

@@ -1,4 +1,4 @@
 {
     "sourceDirs": ["lib"],
-    "testDirs": ["unit"]
+    "testDirs": ["unit", "integration"]
 }
