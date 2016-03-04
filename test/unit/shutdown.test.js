@@ -69,6 +69,48 @@ describe('shutdown', function () {
         return mockApp.shutdown().then(wasCalled);
     });
     
+    it('should wait for an event emitter with \'close\' event', function () {
+        mockApp.once('shutdown', function (await) {
+            var ee = new EventEmitter();
+            ee.on('close', didCall);
+            
+            await(ee);
+            
+            setImmediate(function () {
+                ee.emit('close');
+            });
+        });
+        return mockApp.shutdown().then(wasCalled);
+    });
+    
+    it('should wait for an event emitter with \'end\' event', function () {
+        mockApp.once('shutdown', function (await) {
+            var ee = new EventEmitter();
+            ee.on('end', didCall);
+            
+            await(ee);
+            
+            setImmediate(function () {
+                ee.emit('end');
+            });
+        });
+        return mockApp.shutdown().then(wasCalled);
+    });
+    
+    it('should wait for an event emitter with \'error\' event', function () {
+        mockApp.once('shutdown', function (await) {
+            var ee = new EventEmitter();
+            ee.on('error', didCall);
+            
+            await(ee);
+            
+            setImmediate(function () {
+                ee.emit('error');
+            });
+        });
+        return mockApp.shutdown().then(wasCalled);
+    });
+    
     it('should allow multiple calls to \'await\'', function () {
         mockApp.once('shutdown', function (await) {
             await(Promise.delay(20).then(didCall));
