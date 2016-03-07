@@ -1,4 +1,5 @@
 {
+    "preload": "./init.js",
     "sourceDirs": ["lib"],
     "testDirs": ["unit", "integration"]
 }

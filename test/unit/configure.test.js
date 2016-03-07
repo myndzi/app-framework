@@ -16,17 +16,17 @@ describe('configure', function () {
         }),
         emit: function () { }
     };
-    
+
     var mod = require('../../lib/configure');
-    
+
     before(function () {
         return mod(mockApp, { }, { });
     });
-    
+
     it('should attach a \'config\' object that is an instance of node-convict', function () {
         mockApp.should.have.property('config').with.property('validate');
     });
-    
+
     it('should return a rejected promise if config doesn\'t validate', function () {
         return mod(mockApp, {
             name: false
