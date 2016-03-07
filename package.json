@@ -1,6 +1,6 @@
 {
   "name": "@myndzi/app-framework",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "Config and logging framework for Node.js applications",
   "main": "./lib/index.js",
   "scripts": {
