@@ -26,6 +26,20 @@ This includes a little boilerplate that allows the product to function as a modu
 		module.exports();
 	}
 
+# Command line commands
+
+`app-framework` will process and react to certain commands given on the command line if enabled. The environment variable `ALLOW_COMMANDS` or switch `--allow-commands` must be passed to enable this behavior. When enabled, the following behaviors can be used:
+
+- self-test - binds a handler that calls app.shutdown() after the 'listening' event is emitted. Can be used to exercise the entire async startup process.
+- dump-config - disables all logging and binds two handlers:
+-- 'loaded' - dumps a pretty-printed JSON representation of the app config to stdout
+-- 'listening' - calls app.shutdown
+
+If using npm scripts to run your app, you can execute these commands like so:
+`ALLOW_COMMANDS=true npm start self-test`
+`ALLOW_COMMANDS=true npm -s start dump-config`
+
+The -s switch makes npm silent, so that you get pure JSON from stdout instead of the extra NPM logging at the beginning.
 
 # Configuration
 
@@ -96,7 +110,7 @@ Otherwise, `app-framework` looks for the following configuration data:
 - `log.ringbuffer.limit` - Not yet implemented. Number of lines to retain in the ring buffer.
 
 ### Note:
-`ringbuffer` is a special type of log that keeps a circular buffer of the last X log messages. Its intended use is to store log messages for dumping on unexpected exit (for example, when no screen logging is in use), but this behavior is not yet implemented. 
+`ringbuffer` is a special type of log that keeps a circular buffer of the last X log messages. Its intended use is to store log messages for dumping on unexpected exit (for example, when no screen logging is in use), but this behavior is not yet implemented.
 
 ### Note:
 Since this section can be disabled entirely, `app-framework` does not create the schema automatically like the core config values above.
@@ -174,7 +188,7 @@ Emitted when new configuration is loaded via `app.configure()`
 	app.on('configure', function (newConfig) {
 		// update behavior
 	});
- 
+
 
 ## app.env
 Contains the configured environment
