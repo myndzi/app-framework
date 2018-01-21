@@ -27,7 +27,7 @@
     "@myndzi/test-runner": "^1.0.4",
     "bamp": "^1.0.3",
     "mocha": "^2.0.1",
-    "should": "^6.0.1",
+    "should": "4.5.2",
     "should-eventually": "^0.2.0"
   }
 }

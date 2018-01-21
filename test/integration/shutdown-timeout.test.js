@@ -3,6 +3,7 @@
 require('should-eventually');
 
 var App = require('../../lib/index');
+var Promise = require('bluebird');
 
 describe('app.shutdownTimeout', function () {
     it('should default to no timeout', function () {
@@ -20,7 +21,7 @@ describe('app.shutdownTimeout', function () {
             (theTimeout === null).should.be.ok;
         });
     });
-    
+
     it('should accept the specified value', function () {
         var theTimeout;
         return App({
@@ -36,7 +37,7 @@ describe('app.shutdownTimeout', function () {
             theTimeout.should.equal(123);
         });
     });
-    
+
     it('should be reconfigurable', function () {
         var theTimeout;
         return App({

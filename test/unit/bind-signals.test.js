@@ -7,13 +7,16 @@ var EE = require('events').EventEmitter,
 require('should-eventually');
 
 describe('bind-signals', function () {
-    var app, enabled;
+    var app;
 
-    function mock(_enabled, fn) {
-        enabled = _enabled;
+    function mock(enabled, fn) {
         app = new EE();
-        app.config = {
-            get: function () { return enabled; }
+        app.enabled = enabled;
+
+        app.config = { get: function () { return app.enabled; } };
+        app.reconfigure = function (enabled) {
+            app.enabled = enabled;
+            app.emit('configure');
         };
         app.shutdown = fn;
 
@@ -114,8 +117,7 @@ describe('bind-signals', function () {
             var called = false;
 
             mock(false, function () { called = true; });
-            enabled = true;
-            app.emit('configure');
+            app.reconfigure(true);
 
             process.once('SIGINT', function () {
                 called.should.equal(true);
@@ -129,8 +131,7 @@ describe('bind-signals', function () {
             var called = false;
 
             mock(false, function () { called = true; });
-            enabled = true;
-            app.emit('configure');
+            app.reconfigure(true);
 
             process.once('SIGTERM', function () {
                 called.should.equal(true);
@@ -142,8 +143,7 @@ describe('bind-signals', function () {
 
         it('should not re-bind multiple times', function () {
             mock(false, function () { });
-            enabled = true;
-            app.emit('configure');
+            app.reconfigure(true);
 
             var sigintListeners = process.listeners('SIGINT'),
                 sigtermListeners = process.listeners('SIGTERM');
@@ -160,8 +160,7 @@ describe('bind-signals', function () {
             var called = false;
 
             mock(true, function () { called = true; });
-            enabled = false;
-            app.emit('configure');
+            app.reconfigure(false);
 
             process.once('SIGINT', function () {
                 called.should.equal(false);
@@ -175,8 +174,7 @@ describe('bind-signals', function () {
             var called = false;
 
             mock(true, function () { called = true; });
-            enabled = false;
-            app.emit('configure');
+            app.reconfigure(false);
 
             process.once('SIGTERM', function () {
                 called.should.equal(false);
