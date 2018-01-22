@@ -21,6 +21,7 @@
     "express": "^4.11.1",
     "extend": "^2.0.0",
     "logrotate-stream": "^0.2.3",
+    "stoppable": "git://github.com/myndzi/stoppable",
     "syslog2": "^1.0.6"
   },
   "devDependencies": {
