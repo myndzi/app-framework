@@ -8,6 +8,10 @@ var convict = require('convict');
 describe('live-config', function () {
     var mockApp = new EventEmitter();
     mockApp.config = convict({
+        app: {
+            env: { format: String, default: null },
+            root: { format: String, default: null },
+        },
         test2: {
             two: {
                 format: 'integer',

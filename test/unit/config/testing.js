@@ -1,1 +1,1 @@
-module.exports = { "test": "fail" };
+module.exports = { };

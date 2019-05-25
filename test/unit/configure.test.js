@@ -6,7 +6,16 @@ var convict = require('convict');
 
 describe('configure', function () {
     var mockApp = {
-        config: convict({ }).load({
+        config: convict({
+            app: {
+                name: { format: String, default: null },
+                env: { format: String, default: null },
+                root: { format: String, default: null },
+            },
+            log: {
+                level: { format: String, default: null }
+            }
+        }).load({
             log: { level: 'none' },
             app: {
                 env: 'testing',
@@ -29,10 +38,10 @@ describe('configure', function () {
 
     it('should return a rejected promise if config doesn\'t validate', function () {
         return mod(mockApp, {
-            name: false
+            app: { name: null }
         }, {
             app: { name: { default: 'test' } },
             test: { default: 'succeed', format: ['succeed'] }
-        }).should.be.rejectedWith(/must be one of the possible values/);
+        }).should.be.rejectedWith(/be of type/);
     });
 });

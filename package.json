@@ -17,7 +17,7 @@
     "bluebird": "^3.0.0",
     "bunyan": "^1.8.12",
     "bunyan-screenlogger": "^1.0.2",
-    "convict": "^1.5.0",
+    "convict": "^5.0.0",
     "express": "^4.17.0",
     "extend": "^3.0.2",
     "logrotate-stream": "^0.2.5",
