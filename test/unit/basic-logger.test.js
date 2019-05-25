@@ -1,33 +1,33 @@
 'use strict';
 
-require('should-eventually');
+require('should');
 
 describe('basic-logger', function () {
     var _consoleLog = console.log,
         _consoleError = console.error,
         mockApp = { config: { get: function () { return { log: { level: 'trace' } }; } } };
-        
+
     var calls = 0,
         errors = 0;
-    
+
     var quiet = false;
-        
+
     var lastargs = [ ];
-        
+
     function wrap(fn) {
         var err = null;
-        
+
         calls = errors = 0;
         quiet = true;
-        
+
         try { fn(); }
         catch (e) { err = e; }
-        
+
         quiet = false;
-        
+
         if (err !== null) { throw err; }
     }
-    
+
     before(function () {
         console.log = function () {
             calls++;
@@ -41,7 +41,7 @@ describe('basic-logger', function () {
             if (quiet) { return; }
             return _consoleError.apply(console, arguments);
         };
-        
+
         require('../../lib/basic-logger')(mockApp);
     });
 
@@ -75,10 +75,10 @@ describe('basic-logger', function () {
                 lastargs.length.should.be.above(0);
                 lastargs[0].should.match(new RegExp('^'+type, 'i'));
             });
-            
+
         });
     });
-    
+
     after(function () {
         console.log = _consoleLog;
         console.error = _consoleError;

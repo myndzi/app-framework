@@ -1,6 +1,6 @@
 'use strict';
 
-require('should-eventually');
+require('should');
 
 var App = require('../../lib/index');
 var Promise = require('bluebird');

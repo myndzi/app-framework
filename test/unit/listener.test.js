@@ -1,6 +1,6 @@
 'use strict';
 
-require('should-eventually');
+require('should');
 var net = require('net');
 
 var PATH = require('path');
@@ -26,17 +26,17 @@ describe('listener', function () {
         warn: noop,
         error: noop
     };
-    
+
     var server;
-    
+
     before(function () {
         require('../../lib/listener')(mockApp);
     });
-    
+
     it('should add a .listen method to \'app\'', function () {
         mockApp.should.have.property('listen').which.is.a.Function;
     });
-    
+
     it('should emit a \'server\' event when the server has been created', function () {
         var called = false;
         mockApp.once('server', function (_server) {
@@ -47,16 +47,16 @@ describe('listener', function () {
             called.should.equal(true);
         });
     });
-    
+
     it('should clean up when a \'shutdown\' event is emitted on app', function (done) {
         mockApp.emit('shutdown', function (fn) {
             fn(function () {
-                server.listeners().should.be.an.Array.of.length(0);
+                server.listeners().should.be.an.Array().of.length(0);
                 done();
             });
         });
     });
-    
+
     it('should emit a \'listening\' event when the server is listening', function () {
         var called = false;
         mockApp.once('listening', function () {
@@ -66,14 +66,14 @@ describe('listener', function () {
             called.should.equal(true);
         });
     });
-    
+
     it('should call app.shutdown on an error event', function (done) {
         mockApp.shutdown = function () {
             mockApp.emit('shutdown');
-            server.listeners().should.be.an.Array.of.length(0);
+            server.listeners().should.be.an.Array().of.length(0);
             server.close(done);
         };
         server.emit('error');
     });
-    
+
 });

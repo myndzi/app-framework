@@ -1,6 +1,7 @@
 'use strict';
 
-require('should-eventually');
+var Promise = require('bluebird');
+require('should');
 
 describe('app', function () {
     beforeEach(function () {
@@ -36,13 +37,16 @@ describe('app', function () {
         mock.log.debug.should.equal(app.log.debug);
     });
 
-    it('should emit a \'loaded\' event when complete', function (done) {
+    it('should emit a \'loaded\' event when complete', function () {
         var app = this.app;
+
         return require('../../lib/index')({
             root: __dirname,
             quiet: true
         }).then(function (app) {
-            app.once('loaded', done);
+            return new Promise(function (resolve) {
+                app.once('loaded', resolve);
+            });
         });
     });
 

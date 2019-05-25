@@ -14,21 +14,20 @@
   "author": "Kris Reeves",
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^2.9.34||^3.0.0",
-    "bunyan": "^1.2.3",
-    "bunyan-screenlogger": "^1.0.0",
-    "convict": "^1.1.2",
-    "express": "^4.11.1",
-    "extend": "^2.0.0",
-    "logrotate-stream": "^0.2.3",
+    "bluebird": "^3.0.0",
+    "bunyan": "^1.8.12",
+    "bunyan-screenlogger": "^1.0.2",
+    "convict": "^1.5.0",
+    "express": "^4.17.0",
+    "extend": "^3.0.2",
+    "logrotate-stream": "^0.2.5",
     "stoppable": "git://github.com/myndzi/stoppable",
-    "syslog2": "^1.0.6"
+    "syslog2": "^1.1.0"
   },
   "devDependencies": {
-    "@myndzi/test-runner": "^1.0.4",
-    "bamp": "^1.0.3",
-    "mocha": "^2.0.1",
-    "should": "4.5.2",
-    "should-eventually": "^0.2.0"
+    "@myndzi/test-runner": "^1.1.8",
+    "bamp": "^1.0.11",
+    "mocha": "^6.1.4",
+    "should": "^13.2.3"
   }
 }

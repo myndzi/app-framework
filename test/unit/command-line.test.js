@@ -1,6 +1,6 @@
 'use strict';
 
-require('should-eventually');
+require('should');
 
 var EE = require('events').EventEmitter;
 var commandLine = require('../../lib/command-line');

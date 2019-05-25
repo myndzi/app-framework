@@ -4,7 +4,7 @@ var EE = require('events').EventEmitter,
     bindSignals = require('../../lib/bind-signals'),
     nullLogger = require('../../lib/null-logger');
 
-require('should-eventually');
+require('should');
 
 describe('bind-signals', function () {
     var app;

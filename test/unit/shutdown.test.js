@@ -1,6 +1,6 @@
 'use strict';
 
-require('should-eventually');
+require('should');
 
 var PATH = require('path'),
     EventEmitter = require('events').EventEmitter;
@@ -9,18 +9,18 @@ var Promise = require('bluebird');
 
 describe('shutdown', function () {
     var mockApp, called;
-    
+
     var mod = require('../../lib/shutdown');
-    
+
     var EXIT_CODES = require('../../lib/exit-codes');
-    
+
     beforeEach(function () {
         mockApp = new EventEmitter();
         mockApp.root = __dirname;
         mockApp.config = { get: function () { return null; } };
 
         called = 0;
-        
+
         mod(mockApp);
     });
     function didCall() { called++; }
@@ -31,17 +31,17 @@ describe('shutdown', function () {
             called.should.be.above(0);
         }
     }
-    
+
     it('should add \'restart\' and \'shutdown\' methods', function () {
         mockApp.should.have.property('restart').which.is.a.Function;
         mockApp.should.have.property('shutdown').which.is.a.Function;
     });
-    
+
     it('should shutdown cleanly and resolve with the supplied exit code', function () {
         // assuming -123 isn't assigned here, testing to make sure it's passed along if no problems arise
         return mockApp.shutdown(-123).should.eventually.equal(-123);
     });
-    
+
     it('should emit a \'shutdown\' event with an await function', function () {
         mockApp.once('shutdown', function (await) {
             await.should.be.a.Function;
@@ -49,14 +49,14 @@ describe('shutdown', function () {
         });
         return mockApp.shutdown();
     });
-    
+
     it('should wait for a promise passed to \'await\' before completing shutdown', function () {
         mockApp.once('shutdown', function (await) {
             await(Promise.delay(40).then(didCall));
         });
         return mockApp.shutdown().then(wasCalled);
     });
-    
+
     it('should wait for a node async function passed to \'await\' before completing shutdown', function () {
         mockApp.once('shutdown', function (await) {
             await(function (callback) {
@@ -68,49 +68,49 @@ describe('shutdown', function () {
         });
         return mockApp.shutdown().then(wasCalled);
     });
-    
+
     it('should wait for an event emitter with \'close\' event', function () {
         mockApp.once('shutdown', function (await) {
             var ee = new EventEmitter();
             ee.on('close', didCall);
-            
+
             await(ee);
-            
+
             setImmediate(function () {
                 ee.emit('close');
             });
         });
         return mockApp.shutdown().then(wasCalled);
     });
-    
+
     it('should wait for an event emitter with \'end\' event', function () {
         mockApp.once('shutdown', function (await) {
             var ee = new EventEmitter();
             ee.on('end', didCall);
-            
+
             await(ee);
-            
+
             setImmediate(function () {
                 ee.emit('end');
             });
         });
         return mockApp.shutdown().then(wasCalled);
     });
-    
+
     it('should wait for an event emitter with \'error\' event', function () {
         mockApp.once('shutdown', function (await) {
             var ee = new EventEmitter();
             ee.on('error', didCall);
-            
+
             await(ee);
-            
+
             setImmediate(function () {
                 ee.emit('error');
             });
         });
         return mockApp.shutdown().then(wasCalled);
     });
-    
+
     it('should allow multiple calls to \'await\'', function () {
         mockApp.once('shutdown', function (await) {
             await(Promise.delay(20).then(didCall));
@@ -118,7 +118,7 @@ describe('shutdown', function () {
         });
         return mockApp.shutdown().then(wasCalled(2));
     });
-    
+
     it('should wait for \'await\' arguments even if they fail', function () {
         mockApp.once('shutdown', function (await) {
             await(Promise.reject('foo'));
@@ -126,14 +126,14 @@ describe('shutdown', function () {
         });
         return mockApp.shutdown().then(wasCalled);
     });
-    
+
     it('should resolve with SHUTDOWN_TIMEOUT_EXCEEDED if a timeout is specified and await handlers do not conclude', function () {
         mockApp.once('shutdown', function (await) {
             await(function () { });
         });
         return mockApp.shutdown('foo', 40).should.eventually.equal(EXIT_CODES.SHUTDOWN_TIMEOUT_EXCEEDED);
     });
-    
+
     it('should emit an \'after shutdown\' event with errors', function () {
         var foo = { }; // errors should be passed along verbatim
         mockApp.once('shutdown', function (await) {
@@ -146,7 +146,7 @@ describe('shutdown', function () {
         });
         return mockApp.shutdown().then(wasCalled(2));
     });
-    
+
     it('should include an error if \'await\' is called with an error', function () {
         mockApp.once('shutdown', function (await) {
             await(new Error('foo'));
@@ -158,7 +158,7 @@ describe('shutdown', function () {
         });
         return mockApp.shutdown().then(wasCalled(2));
     });
-    
+
     it('should emit an \'after shutdown\' event with handler promises if it times out', function () {
         mockApp.once('shutdown', function (await) {
             await(function () { });
@@ -170,7 +170,7 @@ describe('shutdown', function () {
         });
         return mockApp.shutdown('foo', 40).then(wasCalled(2));
     });
-    
+
     it('should allow the \'after shutdown\' event to alter the return code', function () {
         mockApp.once('after shutdown', function (result) {
             result.code = -123;
@@ -187,7 +187,7 @@ describe('shutdown', function () {
         });
         return mockApp.shutdown(-123, 'foo', 1234).then(wasCalled);
     });
-    
+
     it('should call all handlers even if one throws synchronously', function () {
         mockApp.once('shutdown', function () {
             throw 'foo';

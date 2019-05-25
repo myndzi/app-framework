@@ -1,6 +1,6 @@
 'use strict';
 
-require('should-eventually');
+require('should');
 
 var convict = require('convict');
 
@@ -33,6 +33,6 @@ describe('configure', function () {
         }, {
             app: { name: { default: 'test' } },
             test: { default: 'succeed', format: ['succeed'] }
-        }).should.eventually.throw(/must be one of the possible values/);
+        }).should.be.rejectedWith(/must be one of the possible values/);
     });
 });

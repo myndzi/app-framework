@@ -1,6 +1,6 @@
 'use strict';
 
-require('should-eventually');
+require('should');
 
 var EventEmitter = require('events').EventEmitter;
 var PassThrough = require('stream').PassThrough;
@@ -52,7 +52,7 @@ describe('logging', function () {
         });
     }
     var mod = require('../../lib/logging');
-    
+
     it('should attach a \'log\' property to the app with appropriate methods', function () {
         configure({
             types: ['screen'],
@@ -66,17 +66,17 @@ describe('logging', function () {
             });
         });
     });
-    
+
     describe('file logging', function () {
         var tempLog = PATH.join(__dirname, 'temp.log');
-        
+
         beforeEach(function () {
             return fs.unlink$(tempLog).catch(function () { });
         });
         afterEach(function () {
             return fs.unlink$(tempLog).catch(function () { });
         });
-        
+
         it('should write each log type to file', function () {
             configure({
                 types: ['file'],
@@ -102,19 +102,19 @@ describe('logging', function () {
                 var arr = buf.toString()
                     .split('\n')
                     .filter(function (a) { return a; });
-                    
+
                 var types = ['trace', 'debug', 'info', 'warn', 'error', 'fatal'];
-                
+
                 arr.forEach(function (line) {
                     line = JSON.parse(line);
                     nameFromLevel[line.level].should.equal(line.msg);
                     types.splice(types.indexOf(line.level), 1);
                 });
-                
+
                 types.length.should.equal(0);
             });
         });
-        
+
         it('should limit writes to errors only when configured to do so', function () {
             configure({
                 types: ['file'],
@@ -140,12 +140,12 @@ describe('logging', function () {
                 var arr = buf.toString()
                     .split('\n')
                     .filter(function (a) { return a; });
-                
+
                 arr.length.should.equal(2);
             });
         });
     });
-    
+
     describe('screen logging', function () {
         var Logger = require('bunyan-screenlogger'),
             _log = Logger.prototype.log;
@@ -159,14 +159,14 @@ describe('logging', function () {
         after(function () {
             Logger.prototype.log = _log;
         });
-        
+
         it('should write each log type to the screen', function () {
             configure({
                 types: ['screen'],
                 level: 'trace',
                 screen: { }
             });
-            
+
             return mod(mockApp).then(function (app) {
                 app.log.trace('trace');
                 app.log.debug('debug');
@@ -179,14 +179,14 @@ describe('logging', function () {
             }).then(function () {
                 var arr = msgs;
                 msgs = [ ];
-                
+
                 var types = ['trace', 'debug', 'info', 'warn', 'error', 'fatal'];
-                
+
                 arr.forEach(function (line) {
                     nameFromLevel[line.level].should.equal(line.msg);
                     types.splice(types.indexOf(line.level), 1);
                 });
-                
+
                 types.length.should.equal(0);
             });
         });
@@ -208,17 +208,17 @@ describe('logging', function () {
             }).then(function () {
                 var arr = msgs;
                 msgs = [ ];
-                
+
                 arr.length.should.equal(2);
             });
         });
     });
-    
+
     describe('syslog logging', function () {
         var pt, msgs = [ ];
-        
+
         var server, BIND_PORT = 1414;
-        
+
         beforeEach(function (done) {
             server = net.createServer();
             server.listen(BIND_PORT, done);
@@ -226,7 +226,7 @@ describe('logging', function () {
         afterEach(function (done) {
             server.close(done);
         });
-        
+
         it('should log to syslog', function (done) {
             configure({
                 types: ['syslog'],
@@ -239,17 +239,17 @@ describe('logging', function () {
                     }
                 }
             });
-            
+
             var app;
-            
+
             server.on('connection', function (socket) {
                 socket.on('data', function (chunk) {
                     // checking the message contents more strictly is troublesome
-                    
+
                     var msgs = chunk.toString().split(/\r?\n/)
                         .filter(function (a) { return a; });
                     msgs.length.should.equal(6);
-                    
+
                     app.log.close().nodeify(done);
                 });
             });
@@ -275,20 +275,20 @@ describe('logging', function () {
                     }
                 }
             });
-            
+
             var app;
             server.on('connection', function (socket) {
                 socket.on('data', function (chunk) {
                     // checking the message contents more strictly is troublesome
-                    
+
                     var msgs = chunk.toString().split(/\r?\n/)
                         .filter(function (a) { return a; });
                     msgs.length.should.equal(2);
-                    
+
                     app.log.close().nodeify(done);
                 });
             });
-            
+
             mod(mockApp).then(function (_app) {
                 app = _app;
                 _app.log.trace('trace');
