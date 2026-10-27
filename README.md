@@ -1,3 +1,7 @@
+# Archived
+
+Legacy / unused
+
 # App-framework
 
 It's a working title.
